@@ -1,0 +1,24 @@
+html, body {
+    height: 100%;
+}
+
+.container {
+    margin: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 100%;
+}
+
+.barcode-wrapper {
+    width: 500px;
+}
+
+.form-wrapper {
+    width: 500px;
+}
+
+.input-wrapper {
+    width: 100%;
+    margin-bottom: 10px;
+}
