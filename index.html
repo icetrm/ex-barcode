@@ -57,6 +57,7 @@
 
     function onChangeBarcodeValueEnd(value) {
         barcodeValueEnd = removeNonNumericCharacters(value);
+        renderBarcode(barcodeValueStart);
     }
 
     function onChangeBarcodeWidth(value) {
