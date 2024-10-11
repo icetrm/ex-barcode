@@ -4,7 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Generate Barcode</title>
+    <meta name="description" content="Generate Barcode">
+    <meta name="author" content="icetrm">
     <script src="JsBarcode.all.js" type="text/javascript"></script>
     <script src="bootstrap-5.3.3/js/bootstrap.js" type="text/javascript"></script>
     <link rel="stylesheet" href="bootstrap-5.3.3/css/bootstrap.css">
@@ -13,7 +15,7 @@
 
 <script type="text/javascript">
     var barcodeFormat = "CODE128";
-    var barcodeStringFormat = "xxxxxxxxxx";
+    var barcodeStringFormat = "xxxxxxxxx-x";
     var barcodeValueStart = "0";
     var barcodeValueEnd = "1";
     var barcodeWidth = 2;
@@ -23,9 +25,24 @@
         renderBarcode(barcodeValueStart);
     }
 
-    function generateBarcode(barcode_string_format, barcode_value_start) {
-        barcode_string = barcode_string_format.replace(/x/g, "0").substring(0, barcode_string_format.length - barcode_value_start.length) + barcode_value_start;
-        return barcode_string;
+    function removeNonNumericCharacters(string) {
+        const nonNumericRegex = /[^0-9]/g;
+        const cleanedString = string.replace(nonNumericRegex, '');
+        return cleanedString;
+    }
+
+    function generateBarcode(format, value) {
+        var regex = /x/g;
+        var splitFormat = format.split('');
+        
+        value.split('').reverse().forEach(element => {
+            var lastIndex = splitFormat.lastIndexOf('x');
+            splitFormat[lastIndex] = element;
+        });
+        var result = splitFormat.join('').replace(regex, '0');
+        // var result = format.replace(regex, '0').substring(0, format.length - value.length) + value;
+
+        return result;
     }
 
     function onChangeFormat(value) {
@@ -34,38 +51,42 @@
     }
 
     function onChangeBarcodeValueStart(value) {
-        barcodeValueStart = value;
+        barcodeValueStart = removeNonNumericCharacters(value);
         renderBarcode(barcodeValueStart);
     }
 
     function onChangeBarcodeValueEnd(value) {
-        barcodeValueEnd = value;
+        barcodeValueEnd = removeNonNumericCharacters(value);
     }
 
     function onChangeBarcodeWidth(value) {
-        barcodeWidth = value;
+        barcodeWidth = removeNonNumericCharacters(value);
         renderBarcode(barcodeValueStart);
     }
 
     function onChangeBarcodeHeight(value) {
-        barcodeHeight = value;
+        barcodeHeight = removeNonNumericCharacters(value);
+        renderBarcode(barcodeValueStart);
+    }
+
+    function onChangeBarcodeStringFormat(value) {
+        barcodeStringFormat = value;
         renderBarcode(barcodeValueStart);
     }
 
     function renderBarcode(value) {
         document.getElementById("barcodeValueStart").value = barcodeValueStart;
         document.getElementById("barcodeValueEnd").value = barcodeValueEnd;
-
-        document.getElementById("customRange").value = barcodeWidth;
-        document.getElementById("customRangeHeight").value = barcodeHeight;
-        document.getElementById("barcodeWidthValue").innerHTML = barcodeWidth;
-        document.getElementById("barcodeHeightValue").innerHTML = barcodeHeight;
+        document.getElementById("barcodeStringFormat").value = barcodeStringFormat;
+        document.getElementById("barcodeWidthValue").value = barcodeWidth;
+        document.getElementById("barcodeHeightValue").value = barcodeHeight;
 
         JsBarcode("#barcode", generateBarcode(barcodeStringFormat, value), {
             format: barcodeFormat,
             width: barcodeWidth,
             height: barcodeHeight
         });
+
         // JsBarcode("#barcode", "123456789012");
         // JsBarcode("#barcode")
         //     .options({ font: "OCR-B" }) // Will affect all barcodes
@@ -102,26 +123,49 @@
                     <option value="CODE128">CODE128</option>
                     <option value="CODE128A">CODE128A</option>
                     <option value="CODE128B">CODE128B</option>
+                    <!-- <option value="UPCA">UPCA</option> -->
+                    <!-- <option value="EAN13">EAN13</option> -->
+                    <!-- <option value="EAN8">EAN8</option> -->
+                    <!-- <option value="EAN5">EAN5</option> -->
+                    <!-- <option value="EAN2">EAN2</option> -->
+                    <!-- <option value="CODE39">CODE39</option>
+                    <option value="ITF14">ITF14</option>
+                    <option value="MSI">MSI</option>
+                    <option value="MSI10">MSI10</option>
+                    <option value="MSI11">MSI11</option>
+                    <option value="MSI1010">MSI1010</option>
+                    <option value="MSI1110">MSI1110</option>
+                    <option value="pharmacode">pharmacode</option>
+                    <option value="codabar">codabar</option> -->
                 </select>
                 <label for="floatingSelect">Barcode Type</label>
             </div>
-            <div class="">
-                <label for="customRange" class="form-label">Barcode Width: <span id="barcodeWidthValue"></span></label>
-                <input type="range" class="form-range" min="1" max="5" id="customRange" onchange="onChangeBarcodeWidth(this.value)">
-            </div>
-            <div class="">
-                <label for="customRange" class="form-label">Barcode Height: <span id="barcodeHeightValue"></span></label>
-                <input type="range" class="form-range" min="50" max="150" id="customRangeHeight" onchange="onChangeBarcodeHeight(this.value)">
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="barcodeStringFormat" placeholder=""
+                    onchange="onChangeBarcodeStringFormat(this.value)">
+                <label for="barcodeStringFormat">Barcode String Format</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="barcodeValueStart" placeholder="" onchange="onChangeBarcodeValueStart(this.value)">
+                <input type="text" class="form-control" id="barcodeWidthValue" placeholder=""
+                    onchange="onChangeBarcodeWidth(this.value)">
+                <label for="barcodeWidthValue">Barcode Width</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="barcodeHeightValue" placeholder=""
+                    onchange="onChangeBarcodeHeight(this.value)">
+                <label for="barcodeHeightValue">Barcode Height</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="barcodeValueStart" placeholder=""
+                    onchange="onChangeBarcodeValueStart(this.value)">
                 <label for="barcodeValueStart">Start Value</label>
             </div>
             <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="barcodeValueEnd" placeholder="" onchange="onChangeBarcodeValueEnd(this.value)">
+                <input type="text" class="form-control" id="barcodeValueEnd" placeholder=""
+                    onchange="onChangeBarcodeValueEnd(this.value)">
                 <label for="barcodeValueEnd">End Value</label>
             </div>
-           
+
             <div class="form-floating">
                 <button type="button" class="btn btn-primary" onclick="onClickPrint()">Print</button>
                 <button type="button" class="btn btn-primary" onclick="onClickSubmit()">Submit</button>

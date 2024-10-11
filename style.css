@@ -8,10 +8,13 @@ html, body {
     flex-direction: row;
     align-items: center;
     height: 100%;
+    justify-content: center;
 }
 
 .barcode-wrapper {
     width: 500px;
+    display: flex;
+    justify-content: center;
 }
 
 .form-wrapper {
