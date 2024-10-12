@@ -25,3 +25,20 @@ html, body {
     width: 100%;
     margin-bottom: 10px;
 }
+
+.preview-wrapper {
+    width: 100%;
+    display: block;
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+    .barcode-wrapper {
+        width: 100%;
+    }
+    .form-wrapper {
+        width: 100%;
+    }
+}

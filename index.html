@@ -15,11 +15,13 @@
 
 <script type="text/javascript">
     var barcodeFormat = "CODE128";
-    var barcodeStringFormat = "xxxxxxxxx-x";
+    var barcodeStringFormat = "xxxxxxxxxx";
     var barcodeValueStart = "0";
     var barcodeValueEnd = "1";
-    var barcodeWidth = 2;
-    var barcodeHeight = 100;
+    var barcodeWidth = 1;
+    var barcodeHeight = 30;
+    var barcodeFontSize = 14;
+    var barcodeMargin = 10;
 
     window.onload = function () {
         renderBarcode(barcodeValueStart);
@@ -34,7 +36,7 @@
     function generateBarcode(format, value) {
         var regex = /x/g;
         var splitFormat = format.split('');
-        
+
         value.split('').reverse().forEach(element => {
             var lastIndex = splitFormat.lastIndexOf('x');
             splitFormat[lastIndex] = element;
@@ -75,17 +77,32 @@
         renderBarcode(barcodeValueStart);
     }
 
+    function onChangeBarcodeFontSize(value) {
+        barcodeFontSize = removeNonNumericCharacters(value);
+        renderBarcode(barcodeValueStart);
+    }
+
+    function onChangeBarcodeMargin(value) {
+        barcodeMargin = removeNonNumericCharacters(value);
+        renderBarcode(barcodeValueStart);
+    }
+
     function renderBarcode(value) {
         document.getElementById("barcodeValueStart").value = barcodeValueStart;
         document.getElementById("barcodeValueEnd").value = barcodeValueEnd;
         document.getElementById("barcodeStringFormat").value = barcodeStringFormat;
         document.getElementById("barcodeWidthValue").value = barcodeWidth;
         document.getElementById("barcodeHeightValue").value = barcodeHeight;
+        document.getElementById("barcodeFontSizeValue").value = barcodeFontSize;
+        // document.getElementById("barcodeMarginValue").value = barcodeMargin;
 
         JsBarcode("#barcode", generateBarcode(barcodeStringFormat, value), {
             format: barcodeFormat,
             width: barcodeWidth,
-            height: barcodeHeight
+            height: barcodeHeight,
+            fontSize: barcodeFontSize,
+            marginLeft: barcodeMargin,
+            marginRight: barcodeMargin
         });
 
         // JsBarcode("#barcode", "123456789012");
@@ -146,34 +163,63 @@
                     onchange="onChangeBarcodeStringFormat(this.value)">
                 <label for="barcodeStringFormat">Barcode String Format</label>
             </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="barcodeWidthValue" placeholder=""
-                    onchange="onChangeBarcodeWidth(this.value)">
-                <label for="barcodeWidthValue">Barcode Width</label>
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="barcodeFontSizeValue" placeholder=""
+                            onchange="onChangeBarcodeFontSize(this.value)">
+                        <label for="barcodeFontSizeValue">Font Size</label>
+                    </div>
+                </div>
+                <!-- <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="barcodeMarginValue" placeholder=""
+                            onchange="onChangeBarcodeMargin(this.value)">
+                        <label for="barcodeMarginValue">Margin</label>
+                    </div>
+                </div> -->
             </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="barcodeHeightValue" placeholder=""
-                    onchange="onChangeBarcodeHeight(this.value)">
-                <label for="barcodeHeightValue">Barcode Height</label>
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="barcodeWidthValue" placeholder=""
+                            onchange="onChangeBarcodeWidth(this.value)">
+                        <label for="barcodeWidthValue">Barcode Width</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="barcodeHeightValue" placeholder=""
+                            onchange="onChangeBarcodeHeight(this.value)">
+                        <label for="barcodeHeightValue">Barcode Height</label>
+                    </div>
+                </div>
             </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="barcodeValueStart" placeholder=""
-                    onchange="onChangeBarcodeValueStart(this.value)">
-                <label for="barcodeValueStart">Start Number</label>
-            </div>
-            <div class="form-floating mb-3">
-                <input type="text" class="form-control" id="barcodeValueEnd" placeholder=""
-                    onchange="onChangeBarcodeValueEnd(this.value)">
-                <label for="barcodeValueEnd">End Number</label>
+            <div class="row g-2">
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="barcodeValueStart" placeholder=""
+                            onchange="onChangeBarcodeValueStart(this.value)">
+                        <label for="barcodeValueStart">Start Number</label>
+                    </div>
+                </div>
+                <div class="col-md">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="barcodeValueEnd" placeholder=""
+                            onchange="onChangeBarcodeValueEnd(this.value)">
+                        <label for="barcodeValueEnd">End Number</label>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-floating">
-                <button type="button" class="btn btn-primary" onclick="onClickPrint()">Print</button>
+            <div class="d-grid gap-2">
                 <button type="button" class="btn btn-primary" onclick="onClickSubmit()">Submit</button>
+                <button type="button" class="btn btn-secondary" onclick="onClickPrint()">Print</button>
             </div>
+
         </div>
     </div>
-    <div id="preview"></div>
+    <div class="preview-wrapper" id="preview"></div>
 
 </body>
 
